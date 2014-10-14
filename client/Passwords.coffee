@@ -1,45 +1,55 @@
 Passwords =
   settings:
     homeRoute: '/home'
-    dashboardRoute: '/dashboard'
-    flashHideDelay: 2000
-
+    dashboardRoute: '/'
     i18nShowMissing: true
+    min: 6
+    FlashMessages:
+      autoHide: false
+      # hideDelay: 2000
 
-    signUpData: 
-      route: 'signUp'
-      head: 'singUp.createAccount'
-      fields: [
-        {name:'email'}
-        {name:'password', min: 6}
-      ]
-      submit: 'Sign Up'
+    privacy: 
+      en: 'privacy'
+      ru: 'ruprivacy'
+    terms: 
+      en: 'terms'
+      ru: 'ruterms'
 
-    signInData: 
-      route: 'signIn'
-      head: 'signIn.head'
-      fields: [
-        {name:'email'}
-        {name:'password', min: 6}
-      ]
-      submit: 'Sign In'
+    routes: 
+      signUp: 
+        path: '/sign-up'
+        fields: [
+          {name:'email', value: 'timtch@gmail.com'}
+          {name:'password', value: 'test12345', min: @min}
+        ]
+
+      signIn:
+        path: '/sign-in'
+        fields: [
+          {name:'email'}
+          {name:'password', min: @min}
+        ]
     
-    forgotPasswordData:
-      route: 'forgotPassword'
-      head: 'forgot.head'
-      fields: [
-        {name:'email'}
-      ]
-      submit: 'Send email verfication token'
+      forgotPassword:
+        path: '/forgot-password'
+        fields: [
+          {name:'email'}
+        ]
 
-    resetPasswordData:
-      route: 'resetPassword'
-      head: 'reset.head'
-      fields: [
-        {name:'password'}
-      ]
-      submit: 'Reset password'
+      resetPassword:
+        path: '/reset-password/:resetToken'
+        fields: [
+          {name:'password'}
+        ]      
 
+      signOut:
+        path: '/sign-out'
+
+  throwErr: (err) ->
+    console.log err
+    reason = err.reason or err or 'Unknown error'
+    FlashMessages.sendError i18n("errors.#{reason}"), 
+      autoHide: @settings.FlashMessages.autoHide, hideDelay: @settings.FlashMessages.hideDelay
 
   config: (appConfig) ->
     @settings = _.extend(@settings, appConfig)
@@ -55,7 +65,7 @@ Passwords =
     unless Meteor.loggingIn()
       unless Meteor.user() and extraCondition
         Router.go('/sign-in')
-        Session.set('entryError', t9n('error.signInRequired'))
+        @throwErr 'signInRequired'
         pause.call()
 
 

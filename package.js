@@ -14,21 +14,23 @@ Package.on_use(function (api) {
     "underscore",
     "mquandalle:jade",
     "iron:router",
-    "anti:i18n",
-    "mrt:flash-messages",
-    "amr:parsley.js",
     ], ["client", "server"]);
 
-  api.use(["less"], ["client"]);
+
+  api.use([
+    "less",
+    "anti:i18n",
+    "timtch:flash-messages-plus",
+    "amr:parsley.js"
+    ], ["client"]);
 
   api.addFiles([
-    "both/router.coffee"
-  ], ["client", "server"]);
-
-  api.addFiles([
-    "client/passwords.coffee",
+    "client/Passwords.coffee",
+    "client/router.coffee",
     "client/views/passwords.jade",
     "client/views/passwords.coffee",
+    "client/i18n/en.coffee",
+    "client/passwords.less"
     ], "client");
 
   api.addFiles([

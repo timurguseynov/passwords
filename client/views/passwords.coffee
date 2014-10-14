@@ -1,28 +1,16 @@
+serialize = (target) ->
+  form = {}
+  $.each $(target).serializeArray(), ->
+    form[@name] = @value
+  form
+
 hashPassword = (password) ->
   digest: SHA256(password)
   algorithm: "sha-256"
 
-isStringEmail = (email) ->
-  emailPattern = /^([\w.-]+)@([\w.-]+)\.([a-zA-Z.]{2,6})$/i
-  if email.match emailPattern then true else false
-
-p18n = (value) ->
-  value
-
-trimInput = (val)->
-  val.replace /^\s*|\s*$/g, ""
-
 throwErr = (err) ->
-  console.log err
-  FlashMessages.sendError i18n(err.reason or "Unknown error"), hideDelay: Passwords.settings.flashHideDelay
+  Passwords.throwErr err
 
-serialize = (target) ->
-  form = {}
-  array = $(target).serializeArray()
-  _.each array, (formItem) ->
-    type = $(target).find("input[name='" + formItem.name + "']").attr("type")
-    form[formItem.name] = formItem.value
-  form
 
 login = (email, password)->
   Meteor.loginWithPassword email, password, (err) ->
@@ -40,28 +28,42 @@ forgotPassword = (email) ->
     Router.go Passwords.settings.homeRoute
 
 resetPassword = (token, password) ->
-  Accounts.resetPassword token, password, (error) ->
+  Accounts.resetPassword token, password, (err) ->
     return throwErr err if err
     Router.go Passwords.settings.dashboardRoute
 
 
 Template.passwordsField.helpers
-  type: () ->
+  type: ->
     if @name.indexOf('password') > -1
-      return 'password'
+      'password'
     else if @name.indexOf('email') > - 1
-      return 'email'
-  id: () ->
+      'email'
+    else
+      'text'
+  id: ->
     @name
-  placeholder: () ->
-    p18n "ph.#{@name}"
+  placeholder: ->
+    i18n "placeholders.#{@name}"
+
+Template.passwordsField.rendered = ->
+  @$('#password').val('')
 
 
 Template.passwordsWrapper.helpers
+  formId: ->
+    console.log "form-#{@route}"
+    "form-#{@route}"
   top: ->
-    _.extend @, top: true
+    _.extend _.clone(@), top: true
+  middle: ->
+    _.extend _.clone(@), middle: true
   bottom: ->
-    _.extend @, top: false
+    _.extend _.clone(@), bottom: true
+  head: ->
+    i18n "#{@route}.head"
+  submit: ->
+    i18n "#{@route}.submit"
   logo: ->
     Passwords.settings.logo
   privacyUrl: ->
@@ -73,8 +75,8 @@ Template.passwordsWrapper.helpers
 Template.passwordsWrapper.events
  'submit': (e, t) ->
     e.preventDefault()
+    FlashMessages.clear()
     email = $('#email').val()
-    email = trimInput email.toLowerCase() if isStringEmail(email)
     password = $('#password').val()
     if t.data.route is 'signUp'
       signUp serialize(e.target)
@@ -83,7 +85,7 @@ Template.passwordsWrapper.events
     else if t.data.route is 'forgotPassword'
       forgotPassword email
     else if t.data.route is 'resetPassword'
-      resetPassword Session.get 'token' , password
+      resetPassword t.data.resetToken , password
 
 
 Template.passwordsWrapper.rendered = ->
@@ -94,6 +96,21 @@ Template.passwordsWrapper.rendered = ->
       return el.$element.closest(".form-group")
     errorsWrapper: "<span class='help-block'></span>"
     errorTemplate: '<span></span>'
+
+
+getLink = (obj, lang) ->
+  lang ?= 'en'
+  urls = Passwords.settings[obj]
+  url = if _.isObject urls then urls[lang] else urls
+
+  url: url, target: url.indexOf('http') > -1 and '_blank'
+
+Template.signUp.helpers
+  privacy: ->
+    getLink 'privacy', @lang?.lang
+  terms: ->
+    getLink 'terms', @lang?.lang 
+
 
 
 
