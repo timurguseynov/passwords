@@ -17,10 +17,12 @@ login = (email, password)->
     return throwErr err if err
     Router.go Passwords.settings.dashboardRoute
 
-signUp = (data) ->
-  Meteor.call 'passwordsCreateUser', data, (err, data) ->
+signUp = (data, lang) ->
+  data.profile = {}
+  data.profile.lang = lang.lang if lang?.lang
+  Meteor.call 'passwordsCreateUser', data, (err) ->
     return throwErr err if err
-    login(email, password)
+    login(data.email, data.password)
 
 forgotPassword = (email) ->
   Accounts.forgotPassword email: email, (err) ->
@@ -35,24 +37,19 @@ resetPassword = (token, password) ->
 
 Template.passwordsField.helpers
   type: ->
-    if @name.indexOf('password') > -1
-      'password'
-    else if @name.indexOf('email') > - 1
-      'email'
-    else
-      'text'
-  id: ->
-    @name
+    if @name is 'password' or @name is 'email' then @name else 'text'
+  min: ->
+    Passwords.settings.min if UI._parentData(1).route is 'signUp' and @name is 'password' 
   placeholder: ->
     i18n "placeholders.#{@name}"
 
 Template.passwordsField.rendered = ->
   @$('#password').val('')
+  @$('#email').val('')
 
 
 Template.passwordsWrapper.helpers
   formId: ->
-    console.log "form-#{@route}"
     "form-#{@route}"
   top: ->
     _.extend _.clone(@), top: true
@@ -66,20 +63,15 @@ Template.passwordsWrapper.helpers
     i18n "#{@route}.submit"
   logo: ->
     Passwords.settings.logo
-  privacyUrl: ->
-    Passwords.settings.privacyUrl
-  termsUrl: ->
-    Passwords.settings.termsUrl
 
 
 Template.passwordsWrapper.events
  'submit': (e, t) ->
     e.preventDefault()
-    FlashMessages.clear()
     email = $('#email').val()
     password = $('#password').val()
     if t.data.route is 'signUp'
-      signUp serialize(e.target)
+      signUp serialize(e.target), t.data.lang
     else if t.data.route is 'signIn'
       login email, password
     else if t.data.route is 'forgotPassword'

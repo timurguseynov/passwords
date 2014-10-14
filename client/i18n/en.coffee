@@ -15,7 +15,7 @@ en =
     submit: 'Sign In'
     forgotPassword: 'Forgot your password?'
     dontHave: "Don't have an account?"
-    signUp: 'sign up'
+    signUp: 'Sign Up'
 
   forgotPassword:
     head: 'Forgot your password?'
@@ -32,7 +32,7 @@ en =
 
   errors:
     # Passwords
-    "signInRequired": "sign in required"
+    "signInRequired": "You must be signed in to do that."
 
     #---- accounts-base
     #"@" + domain + " email required"

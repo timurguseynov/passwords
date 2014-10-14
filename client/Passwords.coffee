@@ -2,32 +2,27 @@ Passwords =
   settings:
     homeRoute: '/home'
     dashboardRoute: '/'
-    i18nShowMissing: true
     min: 6
     FlashMessages:
       autoHide: false
       # hideDelay: 2000
 
-    privacy: 
-      en: 'privacy'
-      ru: 'ruprivacy'
-    terms: 
-      en: 'terms'
-      ru: 'ruterms'
+    privacy: 'privacy'
+    terms: 'terms'
 
     routes: 
       signUp: 
         path: '/sign-up'
         fields: [
-          {name:'email', value: 'timtch@gmail.com'}
-          {name:'password', value: 'test12345', min: @min}
+          {name:'email'}
+          {name:'password'}
         ]
 
       signIn:
         path: '/sign-in'
         fields: [
           {name:'email'}
-          {name:'password', min: @min}
+          {name:'password'}
         ]
     
       forgotPassword:
@@ -48,14 +43,13 @@ Passwords =
   throwErr: (err) ->
     console.log err
     reason = err.reason or err or 'Unknown error'
+    FlashMessages.clear()
     FlashMessages.sendError i18n("errors.#{reason}"), 
       autoHide: @settings.FlashMessages.autoHide, hideDelay: @settings.FlashMessages.hideDelay
 
   config: (appConfig) ->
     @settings = _.extend(@settings, appConfig)
     i18n.setDefaultLanguage 'en'
-
-    i18n.showMissing @settings.i18nShowMissing
 
     if appConfig.language
       i18n.setLanguage appConfig.language
@@ -64,7 +58,8 @@ Passwords =
     extraCondition ?= true
     unless Meteor.loggingIn()
       unless Meteor.user() and extraCondition
-        Router.go('/sign-in')
+        lang = Session.get('passwordsLang') or router?.data?.lang?.lang
+        Router.go("/sign-in")
         @throwErr 'signInRequired'
         pause.call()
 
