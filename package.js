@@ -4,7 +4,7 @@ Package.describe({
   version: "0.0.1"
 });
 
-Package.on_use(function (api) {
+Package.onUse(function (api) {
 
   api.versionsFrom("METEOR@0.9.0");
 
@@ -12,16 +12,16 @@ Package.on_use(function (api) {
     "coffeescript",
     "templating",
     "underscore",
-    "mquandalle:jade",
-    "iron:router",
+    "mquandalle:jade@0.2.8",
+    "iron:router@0.9.4",
     ], ["client", "server"]);
 
 
   api.use([
     "less",
-    "anti:i18n",
-    "timtch:flash-messages-plus",
-    "amr:parsley.js"
+    "anti:i18n@0.4.3",
+    "timtch:flash-messages-plus@0.0.1",
+    "amr:parsley.js@2.0.3"
     ], ["client"]);
 
   api.addFiles([
