@@ -14,6 +14,7 @@ Router.map ->
         @redirect Passwords.settings.dashboardRoute if Meteor.userId() and @route.name isnt 'signOut'
       onBeforeAction: (pause) ->
         FlashMessages.clear()
+        Session.set 'passwordsProccess', false
         i18n.setLanguage @params.lang if @params.lang
         home = Passwords.settings.homeRoute
         if name is 'signOut' and home

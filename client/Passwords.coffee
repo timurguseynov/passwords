@@ -51,7 +51,6 @@ Passwords =
 
   config: (appConfig) ->
     @settings = _.extend(@settings, appConfig)
-    i18n.setDefaultLanguage 'en'
 
   signInRequired: (router, pause) ->
     unless Meteor.user()

@@ -19,16 +19,17 @@ login = (email, password)->
 
 signUp = (data, lang) ->
   data.profile = {}
-  data.profile.lang = lang?.lang or 'en'
-
+  data.profile.lang = lang
   Meteor.call 'passwordsCreateUser', data, (err) ->
     return throwErr err if err
     login(data.email, data.password)
 
-forgotPassword = (email) ->
+forgotPassword = (email, lang) ->
   Accounts.forgotPassword email: email, (err) ->
     return throwErr err if err
-    Router.go Passwords.settings.homeRoute
+    url = '/sign-in'
+    url += "?lang=#{lang}" if lang isnt 'en'
+    Router.go url
 
 resetPassword = (token, password) ->
   Accounts.resetPassword token, password, (err) ->
@@ -40,7 +41,7 @@ Template.passwordsField.helpers
   type: ->
     if @name is 'password' or @name is 'email' then @name else 'text'
   min: ->
-    Passwords.settings.min if UI._parentData(1).route is 'signUp' and @name is 'password' 
+    Passwords.settings.min if UI._parentData(1)?.route is 'signUp' and @name is 'password' 
   placeholder: ->
     i18n "placeholders.#{@name}"
 
@@ -80,11 +81,11 @@ Template.passwordsWrapper.events
     Session.set 'passwordsProccess', true
     email = $('#email').val()
     password = $('#password').val()
-    if t.data.route is 'signUp'
-      signUp serialize(e.target), t.data.lang
-    else if t.data.route is 'forgotPassword'
-      forgotPassword email
-    else if t.data.route is 'resetPassword'
+    if t.data?.route is 'signUp'
+      signUp serialize(e.target), i18n.getLanguage()
+    else if t.data?.route is 'forgotPassword'
+      forgotPassword email, i18n.getLanguage()
+    else if t.data?.route is 'resetPassword'
       resetPassword t.data.resetToken , password
     else
       login email, password
