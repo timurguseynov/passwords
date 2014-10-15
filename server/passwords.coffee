@@ -22,3 +22,6 @@ Meteor.startup ->
 
       if (user.email && Accounts._options.sendVerificationEmail)
         Accounts.sendVerificationEmail(userId, user.email)
+
+      if Passwords.settings.signUpCallback
+        Passwords.settings.signUpCallback(userId)

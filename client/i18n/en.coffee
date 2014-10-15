@@ -1,5 +1,5 @@
 en =
-
+  
   signUp:
     head: 'Create Account'
     submit: 'Sign Up'
@@ -79,5 +79,6 @@ en =
 
     #---- Misc...
     "Unknown error": "Unknown error"
+
 
 i18n.map 'en', en

@@ -19,7 +19,8 @@ login = (email, password)->
 
 signUp = (data, lang) ->
   data.profile = {}
-  data.profile.lang = lang.lang if lang?.lang
+  data.profile.lang = lang?.lang or 'en'
+
   Meteor.call 'passwordsCreateUser', data, (err) ->
     return throwErr err if err
     login(data.email, data.password)
@@ -49,8 +50,12 @@ Template.passwordsField.rendered = ->
 
 
 Template.passwordsWrapper.helpers
+  route: ->
+    @route or 'signIn'
+  fields: ->
+    @fields or Passwords.settings.routes.signIn.fields
   formId: ->
-    "form-#{@route}"
+    "form-#{@route or 'signIn'}"
   top: ->
     _.extend _.clone(@), top: true
   middle: ->
@@ -58,26 +63,31 @@ Template.passwordsWrapper.helpers
   bottom: ->
     _.extend _.clone(@), bottom: true
   head: ->
-    i18n "#{@route}.head"
+    i18n "#{@route or 'signIn'}.head"
   submit: ->
-    i18n "#{@route}.submit"
+    i18n "#{@route or 'signIn'}.submit"
   logo: ->
     Passwords.settings.logo
+  spinner: ->
+    "<i class='fa fa-spinner fa-spin'></i>" if Session.get 'passwordsProccess'
+  disabled: ->
+    Session.get 'passwordsProccess'
 
 
 Template.passwordsWrapper.events
  'submit': (e, t) ->
     e.preventDefault()
+    Session.set 'passwordsProccess', true
     email = $('#email').val()
     password = $('#password').val()
     if t.data.route is 'signUp'
       signUp serialize(e.target), t.data.lang
-    else if t.data.route is 'signIn'
-      login email, password
     else if t.data.route is 'forgotPassword'
       forgotPassword email
     else if t.data.route is 'resetPassword'
       resetPassword t.data.resetToken , password
+    else
+      login email, password
 
 
 Template.passwordsWrapper.rendered = ->
@@ -88,14 +98,16 @@ Template.passwordsWrapper.rendered = ->
       return el.$element.closest(".form-group")
     errorsWrapper: "<span class='help-block'></span>"
     errorTemplate: '<span></span>'
-
+    
+Template.passwordsWrapper.destroyed = ->
+  FlashMessages.clear()
+  Session.set 'passwordsProccess', false
 
 getLink = (obj, lang) ->
   lang ?= 'en'
   urls = Passwords.settings[obj]
   url = if _.isObject urls then urls[lang] else urls
-
-  url: url, target: url.indexOf('http') > -1 and '_blank'
+  if url then url: url, target: url.indexOf('http') > -1 and '_blank' else false
 
 Template.signUp.helpers
   privacy: ->

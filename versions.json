@@ -1,6 +1,14 @@
 {
   "dependencies": [
     [
+      "accounts-base",
+      "1.1.1"
+    ],
+    [
+      "accounts-password",
+      "1.0.2"
+    ],
+    [
       "amr:parsley.js",
       "2.0.3"
     ],
@@ -57,6 +65,10 @@
       "1.0.3"
     ],
     [
+      "email",
+      "1.0.3"
+    ],
+    [
       "follower-livedata",
       "1.0.1"
     ],
@@ -105,6 +117,10 @@
       "1.0.9"
     ],
     [
+      "localstorage",
+      "1.0.0"
+    ],
+    [
       "logging",
       "1.0.3"
     ],
@@ -131,6 +147,10 @@
     [
       "mquandalle:jade",
       "0.2.8"
+    ],
+    [
+      "npm-bcrypt",
+      "0.7.7"
     ],
     [
       "observe-sequence",
@@ -161,12 +181,28 @@
       "1.0.1"
     ],
     [
+      "service-configuration",
+      "1.0.1"
+    ],
+    [
+      "session",
+      "1.0.2"
+    ],
+    [
+      "sha",
+      "1.0.0"
+    ],
+    [
       "spacebars",
       "1.0.2"
     ],
     [
       "spacebars-compiler",
       "1.0.2"
+    ],
+    [
+      "srp",
+      "1.0.0"
     ],
     [
       "templating",
@@ -198,6 +234,6 @@
     ]
   ],
   "pluginDependencies": [],
-  "toolVersion": "meteor-tool@1.0.32",
+  "toolVersion": "meteor-tool@1.0.33",
   "format": "1.0"
 }

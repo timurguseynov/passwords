@@ -7,21 +7,21 @@ Router.map ->
       data: ->
         lang = lang: @params.lang if @params.lang
         lang: lang
-        route: name
+        route: @route.name
         fields: route.fields
         resetToken: @params.resetToken
       onRun: ->
-        Router.go Passwords.settings.dashboardRoute if Meteor.userId() and name isnt 'signOut'
+        @redirect Passwords.settings.dashboardRoute if Meteor.userId() and @route.name isnt 'signOut'
       onBeforeAction: (pause) ->
         FlashMessages.clear()
-        lang = @params.lang or Session.get('passwordsLang')
-        # i18n.setLanguage lang if lang
+        i18n.setLanguage @params.lang if @params.lang
         home = Passwords.settings.homeRoute
         if name is 'signOut' and home
           Meteor.logout ->
-            if home.indexOf('http') > -1  
-              window.location = home + lang
+            if home.indexOf('http') > -1
+              lang = i18n.getLanguage()
+              home += "/#{lang}" if lang isnt 'en'
+              window.location = home
             else
               Router.go home
           pause()
-

@@ -1,14 +1,14 @@
 Passwords =
   settings:
     homeRoute: '/home'
-    dashboardRoute: '/'
+    dashboardRoute: '/dashboard'
     min: 6
     FlashMessages:
       autoHide: false
       # hideDelay: 2000
 
-    privacy: 'privacy'
-    terms: 'terms'
+    # privacy: 'privacy'
+    # terms: 'terms'
 
     routes: 
       signUp: 
@@ -40,9 +40,11 @@ Passwords =
       signOut:
         path: '/sign-out'
 
+        
   throwErr: (err) ->
     console.log err
     reason = err.reason or err or 'Unknown error'
+    Session.set 'passwordsProccess', false
     FlashMessages.clear()
     FlashMessages.sendError i18n("errors.#{reason}"), 
       autoHide: @settings.FlashMessages.autoHide, hideDelay: @settings.FlashMessages.hideDelay
@@ -51,21 +53,14 @@ Passwords =
     @settings = _.extend(@settings, appConfig)
     i18n.setDefaultLanguage 'en'
 
-    if appConfig.language
-      i18n.setLanguage appConfig.language
-
-  signInRequired: (router, pause, extraCondition) ->
-    extraCondition ?= true
-    unless Meteor.loggingIn()
-      unless Meteor.user() and extraCondition
-        lang = Session.get('passwordsLang') or router?.data?.lang?.lang
-        Router.go("/sign-in")
-        @throwErr 'signInRequired'
-        pause.call()
+  signInRequired: (router, pause) ->
+    unless Meteor.user()
+      @throwErr 'signInRequired'
+      router.render 'passwordsWrapper'
+      pause.call()
 
 
 @Passwords = Passwords
-
 
 
 
