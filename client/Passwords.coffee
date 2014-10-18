@@ -1,14 +1,16 @@
 Passwords =
   settings:
-    homeRoute: '/home'
-    dashboardRoute: '/dashboard'
+    home: '/home'
+    dashboard: '/dashboard'
     min: 6
-    FlashMessages:
-      autoHide: false
-      # hideDelay: 2000
-
     # privacy: 'privacy'
     # terms: 'terms'
+
+    i18n:
+      default: 'en'
+      extra: ['ru', 'es']
+      before:
+        noPrefixDefault: true
 
     routes: 
       signUp: 
@@ -40,14 +42,22 @@ Passwords =
       signOut:
         path: '/sign-out'
 
-        
+
+
+  go: (to) ->
+    url = if @settings[to] then  @settings[to] else to
+    url = "/" + i18n.getLanguage() + url if i18n.getLanguage() in @settings.i18n.extra
+    Router.go url
+
+  signOut: ->
+    @go '/sign-out'
+
   throwErr: (err) ->
     console.log err
     reason = err.reason or err or 'Unknown error'
     Session.set 'passwordsProccess', false
-    FlashMessages.clear()
-    FlashMessages.sendError i18n("errors.#{reason}"), 
-      autoHide: @settings.FlashMessages.autoHide, hideDelay: @settings.FlashMessages.hideDelay
+    Flash.clear()
+    Flash.error i18n("errors.#{reason}"), autoHide: false
 
   config: (appConfig) ->
     @settings = _.extend(@settings, appConfig)

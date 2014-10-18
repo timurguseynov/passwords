@@ -1,28 +1,45 @@
 Router.map ->
+
   _.each Passwords.settings.routes, (route, name) =>
-    @route name,
-      path: route.path
-      action: ->
-        @render 'passwordsWrapper'
-      data: ->
-        lang = lang: @params.lang if @params.lang
-        lang: lang
-        route: @route.name
-        fields: route.fields
-        resetToken: @params.resetToken
-      onRun: ->
-        @redirect Passwords.settings.dashboardRoute if Meteor.userId() and @route.name isnt 'signOut'
-      onBeforeAction: (pause) ->
-        FlashMessages.clear()
-        Session.set 'passwordsProccess', false
-        i18n.setLanguage @params.lang if @params.lang
-        home = Passwords.settings.homeRoute
-        if name is 'signOut' and home
-          Meteor.logout ->
-            if home.indexOf('http') > -1
-              lang = i18n.getLanguage()
-              home += "/#{lang}" if lang isnt 'en'
-              window.location = home
-            else
-              Router.go home
-          pause()
+    prefixes = []
+    if Passwords.settings.i18n?.before?.noPrefixDefault
+      prefixes.push "", "/:lang"
+    else if Passwords.settings.i18n?.before
+      prefixes.push "/:lang"
+    else
+      prefixes.push ""
+
+    _.each prefixes, (prefix) =>
+      @route name,
+        path: prefix+route.path
+        action: ->
+          @render 'passwordsWrapper'
+        data: ->
+          lang: @params.lang or ''
+          route: @route.name
+          fields: route.fields
+          resetToken: @params.resetToken
+        onRun: ->
+          Passwords.go 'dashboard' if Meteor.userId() and @route.name isnt 'signOut'
+        onBeforeAction: (pause) ->
+          Flash.clear()
+          Session.set 'passwordsProccess', false
+          i18n.setLanguage @params.lang or 'en'
+          if name is 'signOut'
+            Meteor.logout ->
+              Passwords.go 'home'
+            pause()
+
+
+if Passwords.settings.i18n?.before?.noPrefixDefault
+  Router.onBeforeAction ->
+    @params.lang ?= ""
+    good = Passwords.settings.i18n.extra.slice(0)
+    good.push ""
+    Passwords.go 'home' if @params.lang not in good
+        
+      
+
+
+
+

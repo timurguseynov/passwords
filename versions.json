@@ -209,8 +209,8 @@
       "1.0.7"
     ],
     [
-      "timtch:flash-messages-plus",
-      "0.0.1"
+      "timtch:flash",
+      "0.1.1"
     ],
     [
       "tracker",

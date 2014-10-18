@@ -29,6 +29,8 @@ en =
     email: 'E-mail'
     password: 'Password'
 
+  success:
+    forgotLinkSent: 'The link was sent to your E-mail'
 
   errors:
     # Passwords

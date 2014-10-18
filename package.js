@@ -21,7 +21,7 @@ Package.onUse(function (api) {
     'sha',
     'mquandalle:jade@0.2.8',
     'anti:i18n@0.4.3',
-    'timtch:flash-messages-plus@0.0.1',
+    'timtch:flash@0.1.1',
     'amr:parsley.js@2.0.3'
     ], ['client']);
 
@@ -46,7 +46,7 @@ Package.onUse(function (api) {
   api.export('Passwords', ['client', 'server']);
   api.export([
     'i18n',
-    'FlashMessages',
+    'Flash',
     ], 'client');
 
   

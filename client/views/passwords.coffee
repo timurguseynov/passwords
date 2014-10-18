@@ -4,22 +4,15 @@ serialize = (target) ->
     form[@name] = @value
   form
 
-hashPassword = (password) ->
-  digest: SHA256(password)
-  algorithm: "sha-256"
-
 throwErr = (err) ->
   Passwords.throwErr err
-
 
 login = (email, password)->
   Meteor.loginWithPassword email, password, (err) ->
     return throwErr err if err
-    Router.go Passwords.settings.dashboardRoute
+    Passwords.go 'dashboard'
 
-signUp = (data, lang) ->
-  data.profile = {}
-  data.profile.lang = lang
+signUp = (data) ->
   Meteor.call 'passwordsCreateUser', data, (err) ->
     return throwErr err if err
     login(data.email, data.password)
@@ -27,14 +20,13 @@ signUp = (data, lang) ->
 forgotPassword = (email, lang) ->
   Accounts.forgotPassword email: email, (err) ->
     return throwErr err if err
-    url = '/sign-in'
-    url += "?lang=#{lang}" if lang isnt 'en'
-    Router.go url
+    Passwords.go 'signIn'
+    Flash.success i18n('success.forgotLinkSent')
 
 resetPassword = (token, password) ->
   Accounts.resetPassword token, password, (err) ->
     return throwErr err if err
-    Router.go Passwords.settings.dashboardRoute
+    Passwords.go 'dashboard'
 
 
 Template.passwordsField.helpers
@@ -101,7 +93,7 @@ Template.passwordsWrapper.rendered = ->
     errorTemplate: '<span></span>'
     
 Template.passwordsWrapper.destroyed = ->
-  FlashMessages.clear()
+  Flash.clear()
   Session.set 'passwordsProccess', false
 
 getLink = (obj, lang) ->
@@ -112,9 +104,9 @@ getLink = (obj, lang) ->
 
 Template.signUp.helpers
   privacy: ->
-    getLink 'privacy', @lang?.lang
+    getLink 'privacy', @lang
   terms: ->
-    getLink 'terms', @lang?.lang 
+    getLink 'terms', @lang
 
 
 
