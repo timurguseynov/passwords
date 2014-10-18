@@ -3,11 +3,6 @@ Meteor simple accounts-password bootstrap authentication templates.
 Based on great accounts-entry, but it's just a password authentication with email.
 If you are using coffeescript, Jade, Flash messages, i18n translations this package for you.
 
-
-
-
-
-
 install:
 
 ```

@@ -8,7 +8,7 @@ Passwords =
 
     i18n:
       default: 'en'
-      extra: ['ru', 'es']
+      extra: ['es', 'ru']
       before:
         noPrefixDefault: true
 

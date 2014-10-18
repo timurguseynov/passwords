@@ -19,12 +19,11 @@ Router.map ->
           route: @route.name
           fields: route.fields
           resetToken: @params.resetToken
-        onRun: ->
-          Passwords.go 'dashboard' if Meteor.userId() and @route.name isnt 'signOut'
         onBeforeAction: (pause) ->
           Flash.clear()
           Session.set 'passwordsProccess', false
           i18n.setLanguage @params.lang or 'en'
+          Passwords.go 'dashboard' if Meteor.userId() and @route.name isnt 'signOut'
           if name is 'signOut'
             Meteor.logout ->
               Passwords.go 'home'

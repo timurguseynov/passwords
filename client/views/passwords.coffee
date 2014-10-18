@@ -20,7 +20,7 @@ signUp = (data) ->
 forgotPassword = (email, lang) ->
   Accounts.forgotPassword email: email, (err) ->
     return throwErr err if err
-    Passwords.go 'signIn'
+    Passwords.go '/sign-in'
     Flash.success i18n('success.forgotLinkSent')
 
 resetPassword = (token, password) ->
