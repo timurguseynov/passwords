@@ -6,12 +6,6 @@ Passwords =
     # privacy: 'privacy'
     # terms: 'terms'
 
-    i18n:
-      default: 'en'
-      extra: ['es', 'ru']
-      before:
-        noPrefixDefault: true
-
     routes: 
       signUp: 
         path: '/sign-up'
@@ -42,11 +36,8 @@ Passwords =
       signOut:
         path: '/sign-out'
 
-
-
   go: (to) ->
     url = if @settings[to] then  @settings[to] else to
-    url = "/" + i18n.getLanguage() + url if i18n.getLanguage() in @settings.i18n.extra
     Router.go url
 
   signOut: ->
@@ -62,14 +53,12 @@ Passwords =
   config: (appConfig) ->
     @settings = _.extend(@settings, appConfig)
 
-  signInRequired: (router, pause) ->
-    unless Meteor.user()
+  signInRequired: (router) ->
+    if not Meteor.user()
       @throwErr 'signInRequired'
       router.render 'passwordsWrapper'
-      pause.call()
+    else
+      router.next()
 
 
 @Passwords = Passwords
-
-
-

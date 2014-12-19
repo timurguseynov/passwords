@@ -12,14 +12,11 @@ Package.onUse(function (api) {
     'coffeescript',
     'templating',
     'underscore',
-    'iron:router@0.9.4',
+    'iron:router@1.0.5',
     ], ['client', 'server']);
 
   api.use([
-    'less',
-    'session',
-    'sha',
-    'mquandalle:jade@0.2.8',
+    'mquandalle:jade@0.4.1',
     'anti:i18n@0.4.3',
     'timtch:flash@0.1.1',
     'amr:parsley.js@2.0.3'
@@ -30,8 +27,7 @@ Package.onUse(function (api) {
     'client/router.coffee',
     'client/views/passwords.jade',
     'client/views/passwords.coffee',
-    'client/i18n/en.coffee',
-    'client/passwords.less'
+    'client/i18n/en.coffee'
     ], 'client');
 
   api.addFiles([
@@ -46,7 +42,7 @@ Package.onUse(function (api) {
   api.export('Passwords', ['client', 'server']);
   api.export([
     'i18n',
-    'Flash',
+    'Flash'
     ], 'client');
 
   

@@ -12,7 +12,9 @@ login = (email, password)->
     return throwErr err if err
     Passwords.go 'dashboard'
 
-signUp = (data) ->
+signUp = (data, lang) ->
+  data.profile = {}
+  data.profile.lang = lang
   Meteor.call 'passwordsCreateUser', data, (err) ->
     return throwErr err if err
     login(data.email, data.password)
@@ -107,7 +109,3 @@ Template.signUp.helpers
     getLink 'privacy', @lang
   terms: ->
     getLink 'terms', @lang
-
-
-
-

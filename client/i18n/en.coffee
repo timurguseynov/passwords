@@ -28,6 +28,14 @@ en =
   placeholders:
     email: 'E-mail'
     password: 'Password'
+    
+  SEO:
+    site: 'YourSite.com'
+    titles:
+      signIn: 'Sign In'
+      signUp: 'Sign Up'
+      forgotPassword: 'Forgot Password'
+      resetPassword: 'Reset Password'
 
   success:
     forgotLinkSent: 'The link was sent to your E-mail'
