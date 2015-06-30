@@ -109,3 +109,7 @@ Template.signUp.helpers
     getLink 'privacy', @lang
   terms: ->
     getLink 'terms', @lang
+
+
+
+

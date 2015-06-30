@@ -1,7 +1,7 @@
 Package.describe({
   name: 'timtch:passwords',
   summary: 'Simple accounts-passwords templates with jade',
-  version: '0.0.2'
+  version: '0.0.5'
 });
 
 Package.onUse(function (api) {
@@ -12,14 +12,14 @@ Package.onUse(function (api) {
     'coffeescript',
     'templating',
     'underscore',
-    'iron:router@1.0.5',
+    'iron:router@1.0.7',
     ], ['client', 'server']);
 
   api.use([
     'mquandalle:jade@0.4.1',
     'anti:i18n@0.4.3',
     'timtch:flash@0.1.1',
-    'amr:parsley.js@2.0.3'
+    'amr:parsley.js@2.0.5'
     ], ['client']);
 
   api.addFiles([
@@ -27,7 +27,8 @@ Package.onUse(function (api) {
     'client/router.coffee',
     'client/views/passwords.jade',
     'client/views/passwords.coffee',
-    'client/i18n/en.coffee'
+    'client/i18n/en.coffee',
+    'client/passwords.less'
     ], 'client');
 
   api.addFiles([
